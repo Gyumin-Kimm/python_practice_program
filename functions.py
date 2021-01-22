@@ -1,5 +1,6 @@
 from math import factorial as f
 
+
 # 뒷 4자리 제외 '*' 마스킹
 def masking_num(num):
     return '*' * (len(num) - 4) + num[-4:]
@@ -12,7 +13,8 @@ def harshad_num(num):
 
 # 같은 길이의 배열 곱의 최소값
 def getMinSum(A, B):
-    return sum(a*b for a,b in zip(sorted(A), sorted(B, reverse=True)))
+    return sum(a * b for a, b in zip(sorted(A), sorted(B, reverse=True)))
+
 
 # 조합의 수 - n 개의 서로 다른 원소에서 m 개를 택하는 경우의 수
 def combi(n, m):
@@ -23,4 +25,25 @@ def combi(n, m):
     # else:
     #     return combi(n-1, m) + combi(n-1, m-1)
 
-    return f(n) / (f(m) * f(n-m))
+    return f(n) / (f(m) * f(n - m))
+
+
+# Collatz guess
+def collatz(num):
+    answer = num
+    if answer == 1:
+        return 0
+
+    for i in range(1, 501):
+        if answer % 2 == 0:
+            answer = answer / 2
+        else:
+            answer = answer * 3 + 1
+
+        if answer == 1:
+            answer = i
+            break
+    else:
+        answer = -1
+
+    return answer

@@ -1,8 +1,16 @@
 # 프로그래머스 코딩테스트 연습문제
 
+from collections import deque
+
+import enum
+import collections
+
+
 # 정수 배열 numbers에서 서로 다른 인덱스에 있는 두 개의 수를 뽑아 더해서 만들 수 있는 모든 수를 배열에 오름차순으로 담아 return
 # numbers = [2,1,3,4,1]
 # return = [2,3,4,5,6,7]
+
+
 def sum_list_func(numbers):
     answer = []
     for i in range(len(numbers)):
@@ -194,3 +202,205 @@ def pushing_keypad_func(numbers, hand):
         # print(num)
 
     return answer
+
+
+# 현재 대기목록에 있는 문서의 중요도가 순서대로 담긴 배열 priorities와 내가 인쇄를 요청한 문서가 현재 대기목록의 어떤 위치에 있는지를
+# 알려주는 location이 매개변수로 주어질 때, 내가 인쇄를 요청한 문서가 몇 번째로 인쇄되는지 return
+def priority_printer_func(priorities, location):
+    answer = 0
+    m_list = []
+    b_loop = True
+
+    for idx, val in enumerate(priorities):
+        if idx == location:
+            m_list.append([location, val])
+        else:
+            m_list.append([-1, val])
+
+    while b_loop:
+        list_len = len(m_list)
+        for i in range(1, list_len):
+            # print(m_list, ",", m_list[0][1], m_list[i][1])
+            if m_list[0][1] < m_list[i][1]:
+                m_list.append(m_list.pop(0))
+                break
+        else:
+            answer += 1
+            a, b = m_list.pop(0)
+            if a != -1:
+                b_loop = False
+
+    return answer
+
+
+# print(priority_printer_func([2, 1, 3, 2], 2))
+# print(priority_printer_func([1, 1, 9, 1, 1, 1], 0))
+
+
+# 10진법	124나라	10진법	124나라
+# 1	    1	    6	    14
+# 2	    2	    7	    21
+# 3	    4	    8	    22
+# 4	    11	    9	    24
+# 5	    12	    10	    41
+def change124(n):
+    # q = deque()
+    # x, y = divmod(n, 3)
+    #
+    # while True:
+    #     if y == 1:
+    #         q.appendleft('1')
+    #     elif y == 2:
+    #         q.appendleft('2')
+    #     elif y == 0:
+    #         q.appendleft('4')
+    #
+    #     if n < 4:
+    #         break
+    #
+    #     if y == 0:
+    #         x -= 1
+    #
+    #     if x > 3:
+    #         x, y = divmod(x, 3)
+    #     else:
+    #         if x == 1:
+    #             q.appendleft('1')
+    #         elif x == 2:
+    #             q.appendleft('2')
+    #         elif x == 3:
+    #             q.appendleft('4')
+    #         else:
+    #             pass
+    #         break
+    #
+    # return ''.join(map(str, q))
+    num = ['1', '2', '4']
+    answer = ""
+
+    while n > 0:
+        n -= 1
+        answer = num[n % 3] + answer
+        n //= 3
+
+    return answer
+
+
+def notinlist(participant, completion):
+    answer = collections.Counter(participant) - collections.Counter(completion)
+    return list(answer.keys())[0]
+
+    # used sort
+    # answer = ''
+    #
+    # for p_name, c_name in zip(sorted(participant), sorted(completion)):
+    #     # print(p_name, c_name)
+    #     if p_name != c_name:
+    #         answer += p_name
+    #         break
+    #
+    # if answer == "":
+    #     answer += sorted(participant).pop(-1)
+
+    # used hash
+    # answer = ''
+    # temp = 0
+    # dic = {}
+    # for part in participant:
+    #     dic[hash(part)] = part
+    #     temp += int(hash(part))
+    #     print(dic, temp)
+    #
+    # for com in completion:
+    #     temp -= hash(com)
+    #
+    # answer = dic[temp]
+    #
+    # return answer
+
+
+# print(notinlist(["leo", "kiki", "eden"], ["eden", "kiki"]))
+# print(notinlist(["mislav", "stanko", "mislav", "ana"], ["stanko", "ana", "mislav"]))
+
+
+def no_continuous_num(arr):
+    answer = []
+
+    for i in arr:
+        if not answer:
+            answer.append(i)
+        else:
+            if answer[-1] == i:
+                pass
+            else:
+                answer.append(i)
+
+    return answer
+
+
+# 전체 학생의 수 n, 체육복을 도난당한 학생들의 번호가 담긴 배열 lost,
+# 여벌의 체육복을 가져온 학생들의 번호가 담긴 배열 reserve가 매개변수로 주어질 때,
+# 체육수업을 들을 수 있는 학생의 최댓값을 return 하도록 solution 함수를 작성해주세요.
+def greedy_func(n, lost, reserve):
+    # 1
+    # cnt_list = [1] * (n + 2)
+    # for i in reserve:
+    #     cnt_list[i] += 1
+    #
+    # for i in lost:
+    #     cnt_list[i] -= 1
+    #
+    # print(cnt_list)
+    # for idx, i in enumerate(cnt_list):
+    #     # print(idx, i)
+    #     if i > 1:
+    #         if cnt_list[idx - 1] == 0:
+    #             cnt_list[idx - 1] += 1
+    #             cnt_list[idx] -= 1
+    #         elif cnt_list[idx + 1] == 0:
+    #             cnt_list[idx + 1] += 1
+    #             cnt_list[idx] -= 1
+    #
+    # print(cnt_list)
+    #
+    # answer = len([i for i in cnt_list[1:-1] if i > 0])
+
+    # 2
+    s = set(lost) & set(reserve)  # 교집합
+    l = set(lost) - s  # 잃어버려서 수업참가 불가능한 집합
+    r = set(reserve) - s  # 여분이 있는 집합
+
+    for i in sorted(r):
+        if i - 1 in l:
+            l.remove(i - 1)
+        elif i + 1 in l:
+            l.remove(i + 1)
+
+    answer = n - len(l)
+
+    return answer
+
+
+# print(greedy_func(5, [2, 3, 4], [1, 3, 5]))
+# print(greedy_func(5, [2, 4], [3]))
+
+
+# 주어진 정수가 [6, 10, 2]라면
+# [6102, 6210, 1062, 1026, 2610, 2106]를 만들 수 있고,
+# 이중 가장 큰 수는 6210입니다.
+def big_num_combination(numbers):
+    answer = ''
+
+    s = [str(x) for x in numbers]
+    s.sort(key=lambda x: (x * 4)[:4], reverse=True)
+    if s[0] == '0':
+        answer = '0'
+    else:
+        answer = ''.join(s)
+
+    return answer
+
+# print(big_num_combination([6, 10, 2]))
+# print(big_num_combination([3, 30, 34, 5, 9]))
+
+

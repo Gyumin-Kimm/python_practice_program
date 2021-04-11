@@ -6,6 +6,106 @@ import enum
 import collections
 
 
+# 동아리 인원수 n, 동아리 학번종류 m, 전공 k 보다 큰 동아리 수 구하기
+def solution(students, n, m, k):
+    answer = 0
+    d_num = dict()
+    d_num_major = dict()
+    d_major = dict()
+    s_nums = set()
+    dup_num = set()
+
+    # 분류
+    for student in students:
+        s_num, s_major, s_com = student.split()
+
+        # 중복체크(중복값 중 첫 번째 값은 들어감 size 비교할 때 제외예정)
+        if s_num in s_nums:
+            dup_num.add(s_num)
+        else:
+            s_nums.add(s_num)
+            d_num_major[s_num] = s_major
+
+            # 학번
+            if s_com not in d_num:  # 딕셔너리값이 없으면
+                d_num[s_com] = list()  # 리스트 생성
+            d_num[s_com].append(s_num)
+
+            # 학과
+            if s_com not in d_major:
+                d_major[s_com] = list()
+            d_major[s_com].append(s_major)
+
+    # print("d_num : ", d_num)
+    # print("d_num_major : ", d_num_major)
+    # print("d_major : ", d_major)
+    # print("dup_num : ", dup_num)
+
+    # 동아리 별 체크
+    for key in d_num.keys():
+
+        # 중복 값 중 1개씩은 빼줘야함
+        for dn in dup_num:
+            if dn in d_num[key]:
+                d_num[key].remove(dn)
+                d_major[key].remove(d_num_major[dn])
+                # print("delete : {} / {} / {}".format(key, dn, d_num_major[dn]))
+
+        # 학번
+        num2 = set([x[:2] for x in d_num[key]])
+
+        if len(d_num[key]) >= n and len(num2) >= m and len(d_major[key]) >= k:
+            answer += 1
+
+    return answer
+
+
+print(solution(
+    ["13123820 BusinessManagement AAA",
+     "15047648 Economics AAA",
+     "17869244 ComputerScience AAA",
+     "19000000 ElectronicEngineering AAA",
+     "14281264 Law AAA",
+     "19000000 ElectronicEngineering BBB",
+     "16188768 BusinessManagement BBB",
+     "14634411 Law BBB",
+     "16628760 Economics BBB",
+     "14863606 BusinessManagement CCC",
+     "13165700 Law CCC",
+     "13165700 Law CCC",
+     "13165700 Law CCC",
+     "15215218 ComputerScience CCC"], 4, 3, 3))
+
+
+# 1월 1일의 요일이 day, 각 월별 k 일의 요일의 주말여부 판단
+# day = 6(일요일), k = 1
+# return = [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+def weekday_flag(day):  # 주말여부 판단
+    if day >= 5:
+        return 1  # 주말 = 1
+    return 0  # 평일 0
+
+
+def solution(day, k):
+    answer = []
+    days = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30]
+    """
+    1 / 6
+    2 / (6+1) % 7 = 0
+    3 / (6+2) % 7 = 1
+    25 / (6+24) % 7 = 2
+    """
+
+    for i in range(1, len(days) + 1):
+        answer.append(weekday_flag((day + k + sum(days[:i]) - 1) % 7))
+
+    return answer
+
+
+print(solution(6, 1))
+print(solution(6, 25))
+
+
 # 정수 배열 numbers에서 서로 다른 인덱스에 있는 두 개의 수를 뽑아 더해서 만들 수 있는 모든 수를 배열에 오름차순으로 담아 return
 # numbers = [2,1,3,4,1]
 # return = [2,3,4,5,6,7]
@@ -402,5 +502,3 @@ def big_num_combination(numbers):
 
 # print(big_num_combination([6, 10, 2]))
 # print(big_num_combination([3, 30, 34, 5, 9]))
-
-

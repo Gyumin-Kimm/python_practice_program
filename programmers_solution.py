@@ -6,6 +6,82 @@ import enum
 import collections
 
 
+# 배열의 크기 rows, columns가 주어질 때, (query[0], query[1]) -> (query[2], query[3])
+# 시계방향으로 한칸씩 rotate 시키기
+def print_t(table):
+    for i in table:
+        print(i)
+    print()
+
+
+def rotate_table(matrix, q):
+    # 배열 index에 맞게 변경
+    # print("q(org) : {}".format(q))
+    q = [x - 1 for x in q]
+    # print("q : {}".format(q))
+
+    # 초기값
+    pre = matrix[q[0]][q[1]]
+    curr = 0
+    # print("tmp : {}".format(pre))
+
+    # (q[0], q[1]->q[3])
+    for i in range(q[1] + 1, q[3] + 1):
+        curr = matrix[q[0]][i]
+        matrix[q[0]][i] = pre
+        pre = curr
+
+    # (q[0]->q[2], q[3])
+    for i in range(q[0] + 1, q[2] + 1):
+        curr = matrix[i][q[3]]
+        matrix[i][q[3]] = pre
+        pre = curr
+
+    # (q[2], q[3]->q[1])
+    for i in range(q[3] - 1, q[1] - 1, -1):
+        curr = matrix[q[2]][i]
+        matrix[q[2]][i] = pre
+        pre = curr
+
+    # (q[2]->q[0], q[1])
+    for i in range(q[2] - 1, q[0] - 1, -1):
+        curr = matrix[i][q[1]]
+        # print("curr:{} pre:{}".format(curr, pre))
+        matrix[i][q[1]] = pre
+        pre = curr
+
+    # print_t(matrix)
+
+
+def solution(rows, columns, queries):
+    answer = []
+
+    matrix = []
+    i = 1
+    for row in range(rows):
+        cols = []
+        for col in range(columns):
+            cols.append(i)
+            i += 1
+
+        matrix.append(cols)
+
+    for query in queries:
+        rotate_table(matrix, query)
+        # print_t(matrix)
+        # print("---------------")
+
+    print_t(matrix)
+
+    return answer
+
+
+# print(solution(6, 6, [[2, 2, 5, 4]]))
+print(solution(6, 6, [[2, 2, 5, 4], [3, 3, 6, 6], [5, 1, 6, 3]]))
+print(solution(3, 3, [[1, 1, 2, 2], [1, 2, 2, 3], [2, 1, 3, 2], [2, 2, 3, 3]]))
+print(solution(100, 97, [[1, 1, 100, 97]]))
+
+
 # 동아리 인원수 n, 동아리 학번종류 m, 전공 k 보다 큰 동아리 수 구하기
 def solution(students, n, m, k):
     answer = 0
